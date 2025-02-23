@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gotcha - Scam Detection</title>
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body class="bg-gray-100 font-sans">
+    <header>
+        <nav>
+            <ul>
+                <li class="logo">
+                    <img src="static/logo.png" alt="CyberShield Logo">
+                </li>
+                <li><a href="#scanner">Phone Number</a></li>
+                <li><a href="#tracker">URL Link</a></li>
+                <li><a href="#tracker">Spam Message</a></li>
+                <li><a href="#chatbot">Digital Guardian</a></li>
+            </ul>
+        </nav>
+        <div class="hero" id="home">
+            <h1>Welcome to Gotcha</h1>
+            <p>Scammers are stealing billions, and millions fall victim every year. With Gotcha, we’re here to change that. Drop a number. Paste a message. Our AI exposes fraud in seconds, no more guesswork, no more victims. It’s time to fight back. Stay sharp. Stay safe. Stay scam-proof. 🚀</p>
+        </div>
+    </header>
+    <!-- Phone Number Check -->
+        <section class="mt-6">
+            <h2 class="block text-gray-700">Enter Phone Number:</h2>
+            <input type="text" id="phone_number" class="w-full p-2 border rounded mt-2">
+            <button onclick="checkPhoneNumber()" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">Check</button>
+            <p id="phone_result" class="mt-2 text-gray-700"></p>
+        </section>
+        
+        <!-- URL Check -->
+        <section class="mt-6">
+            <h2 class="block text-gray-700">Enter URL:</h2>
+            <input type="text" id="url" class="w-full p-2 border rounded mt-2">
+            <button onclick="checkURL()" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">Check</button>
+            <p id="url_result" class="mt-2 text-gray-700"></p>
+        </section>
+        
+        <!-- Spam Message Check -->
+        <section class="mt-6">
+            <h2 class="block text-gray-700">Enter Message:</h2>
+            <input id="message" class="w-full p-2 border rounded mt-2"></input>
+            <button onclick="checkSpamMessage()" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">Check</button>
+            <p id="message_result" class="mt-2 text-gray-700"></p>
+        </section>
+        
+        <!-- Emotional Support -->
+        <section id="chatbot">
+            <h2>Digital Guardian</h2>
+            <p class="block text-gray-700">Need Support? Ask Anything:</p>
+            <input id="user_input" class="w-full p-2 border rounded mt-2"></input>
+            <button onclick="getSupport()" class="mt-2 bg-green-500 text-white px-4 py-2 rounded">Ask</button>
+            <div id="chat-messages" class="chat-box">
+                <p id="support_result" class="mt-2 text-gray-700"></p>
+            </div>
+        </section>
+
+                <section class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md mt-8">
+                    <h2 class="text-xl font-semibold text-gray-800">Report Scam Phone Numbers & Emails</h2>
+                    <p class="text-gray-600 mt-2">
+                        If you have encountered a scam phone number or email, please report it to us.
+                    </p>
+                
+                    <div class="mt-4">
+                        <p class="text-gray-700"><strong>📞 Phone:</strong> +1 (800) 555-FAKE</p>
+                        <p class="text-gray-700"><strong>✉️ Email:</strong> report@scamwatch.com</p>
+                    </div>
+                
+                    <p class="text-gray-500 text-sm mt-4">
+                        Help us keep the community safe by reporting suspicious activity!
+                    </p>
+                </section>
+
+            </div>
+    </div>
+    <script>
+        function checkPhoneNumber() {
+            let phoneNumber = document.getElementById("phone_number").value;
+            fetch("/check_phone", {
+                method: "POST",
+                body: new URLSearchParams({phone_number: phoneNumber}),
+                headers: {"Content-Type": "application/x-www-form-urlencoded"}
+            }).then(res => res.json()).then(data => {
+                document.getElementById("phone_result").innerText = data.result;
+            });
+        }
+
+        function checkURL() {
+            let url = document.getElementById("url").value;
+            fetch("/check_url", {
+                method: "POST",
+                body: new URLSearchParams({url: url}),
+                headers: {"Content-Type": "application/x-www-form-urlencoded"}
+            }).then(res => res.json()).then(data => {
+                document.getElementById("url_result").innerText = data.message;
+            });
+        }
+
+       
+        function checkSpamMessage() {
+            let message = document.getElementById("message").value;
+            
+            fetch("/check_spam_message", {
+                method: "POST",
+                body: new URLSearchParams({ message: message }),
+                headers: { "Content-Type": "application/x-www-form-urlencoded" }
+            })
+            .then(res => res.json())
+            .then(data => {
+                let resultElement = document.getElementById("message_result");
+                let prediction = data.result.trim().toLowerCase(); // Normalize response
+
+                resultElement.innerText = `Prediction: ${data.result}`;
+                
+                if (prediction === "spam") {
+                    resultElement.style.color = "red";   // 🔴 Red for spam
+                } else if (prediction === "not spam") {
+                    resultElement.style.color = "green"; // 🟢 Green for not spam
+                } else {
+                    resultElement.style.color = "black"; // Default color for unexpected cases
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function getSupport() {
+            let userInput = document.getElementById("user_input").value;
+            fetch("/emotional_support", {
+                method: "POST",
+                body: new URLSearchParams({user_input: userInput}),
+                headers: {"Content-Type": "application/x-www-form-urlencoded"}
+            }).then(res => res.json()).then(data => {
+                document.getElementById("support_result").innerText = data.response;
+            });
+        }
+    </script>
+    <footer>
+        <p>&copy; 2025 Gotcha. All rights reserved. 
+        </p>
+    </footer>
+</body>
+</html>
